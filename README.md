@@ -31,6 +31,39 @@ SmartDarts is a web-based application designed to bring smart functionality to e
 
 ---
 
+## Dartboard GPIO Connections
+
+### Overview
+The dartboard connects to the GPIO pins of the SBC in a matrix configuration. Each dartboard segment (e.g., specific numbers, doubles, and triples) corresponds to a row and column connection. 
+
+### Wiring Explanation
+1. **Matrix Layout**:
+   - The dartboard uses a matrix system where rows and columns correspond to specific GPIO pins.
+   - When a dart hits a segment, it closes the circuit at the intersection of the respective row and column.
+
+2. **Resistors**:
+   - Each column is connected via pull-down resistors to prevent floating signals and ensure stable readings.
+
+3. **Pin Mapping**:
+   Below is a mapping of the dartboard's segments to the GPIO pins:
+
+   | Dartboard Column | GPIO Pin |
+   |-------------------|----------|
+   | Column 1          | GPIO 6   |
+   | Column 2          | GPIO 27  |
+   | Column 3          | GPIO 5   |
+   | Column 4          | GPIO 17  |
+   | Column 5          | GPIO 10  |
+   | Column 6          | GPIO 22  |
+   | Column 7          | GPIO 26  |
+
+   The rows are connected similarly, with each dartboard number linked to specific pins for segment detection.
+
+4. **Status LED**:
+   - An optional status LED can be connected to GPIO pins to show system activity.
+
+---
+
 ## Getting Started
 
 ### Prerequisites
