@@ -9,20 +9,23 @@ SmartDarts is a web-based application designed to bring smart functionality to e
 ### Current Capabilities:
 - **Dartboard Integration**:
   - Uses GPIO pins to connect and interact with physical electronic dartboards.
-  - Configurable for various dartboard models via a guided initialization process. This allows you to map specific pins to numbers on the dartboard.
+  - Configurable for various dartboard models via a guided initialization process. This allows you to map specific pins to numbers on the dartboard. (WORK IN PROGRESS)
 
 - **Player Support**:
-  - Supports up to 8 players in a single game session.
+  - Supports up to 8 players in a single game session. (WORK IN PROGRESS)
 
 - **Game Modes**:
   1. **X01**: 
-     - Popular game modes such as 301, 501, 701, and more.
+     - Popular game modes such as 301, 501, 701, and more. (WORK IN PROGRESS
   2. **Cricket**:
-     - Full support for this strategic dart game.
+     - Full support for this strategic dart game. (WORK IN PROGRESS)
+
+- **Simulation Mode**:
+ - Its possible to run the application in simulation mode. This DOES NOT require hardware components, wiring and physical dartboard, and is used for testing the application logic.
 
 ### Work in Progress:
 - Enhanced user interface.
-- Additional game modes.
+- Additional game modes and options.
 - Advanced analytics and scoring breakdowns.
 - Remote game hosting and multiplayer support.
 
@@ -31,8 +34,8 @@ SmartDarts is a web-based application designed to bring smart functionality to e
 ## Getting Started
 
 ### Prerequisites
-To use SmartDarts, you will need:
-- A single-board computer (e.g., Raspberry Pi).
+To use SmartDarts (as intended), you will need:
+- A single-board computer (e.g., Raspberry Pi) with GPIO support.
 - A compatible electronic dartboard.
 - Basic wiring to connect the dartboard's output pins to the SBC's GPIO pins.
 
@@ -46,6 +49,8 @@ To use SmartDarts, you will need:
    ```bash
    sudo apt-get update
    sudo apt-get install -y python3 python3-pip
+   python3 -m venv .venv
+   source .venv/bin/activate
    pip3 install -r requirements.txt
    ```
 3. Run the application:
