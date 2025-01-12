@@ -4,6 +4,11 @@ SmartDarts is a web-based application designed to bring smart functionality to e
 
 ---
 
+# WARNING
+THIS IS A WORK IN PROGRESS AND IS NOT RUNNABLE YET.
+
+---
+
 ## Features
 
 ### Current Capabilities:
