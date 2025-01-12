@@ -21,7 +21,7 @@ SmartDarts is a web-based application designed to bring smart functionality to e
      - Full support for this strategic dart game. (WORK IN PROGRESS)
 
 - **Simulation Mode**:
- - Its possible to run the application in simulation mode. This DOES NOT require hardware components, wiring and physical dartboard, and is used for testing the application logic.
+  - Its possible to run the application in simulation mode. This DOES NOT require hardware components, wiring and physical dartboard, and is used for testing the application logic.
 
 ### Work in Progress:
 - Enhanced user interface.
