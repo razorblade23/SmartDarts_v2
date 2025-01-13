@@ -22,16 +22,15 @@ class Dartboard:
             self.gpio.setup_input(row)
 
     async def _scan_matrix(self) -> tuple[int, int] | None:
-        for col_index, col_pin in enumerate(self.col_pins):
+        for col_pin in self.col_pins:
             self.gpio.set_pin_high(col_pin)
-            for row_index, row_pin in enumerate(self.row_pins):
+            for row_pin in self.row_pins:
                 if self.gpio.read_pin(row_pin):
-                    hit_index = (col_index * len(self.row_pins)) + row_index
-                    hit_value = self.matrix[hit_index]
-                    multiplier = self.detect_multiplier()
-                    if hit_value and multiplier:
-                        return hit_value, multiplier
-                    async_sleep(self.gpio.DEBOUNCE_TIME)
+                    for position, pins in self.matrix.items():
+                        if pins["col"] == col_pin and pins["row"] == row_pin:
+                            multiplier = self.detect_multiplier()
+                            await async_sleep(self.gpio.DEBOUNCE_TIME)  # Debounce
+                            return {"position": position, "multiplier": multiplier}
             self.gpio.set_pin_low(col_pin)
         return None
 

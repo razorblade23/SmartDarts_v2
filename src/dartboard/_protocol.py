@@ -5,7 +5,7 @@ class DartboardConfig(Protocol):
     """Protocol for dartboard configurations."""
 
     @property
-    def matrix(self) -> list[int]:
+    def matrix(self) -> dict[int, dict[str, int]]:
         """The dartboard scoring matrix."""
         ...
 
