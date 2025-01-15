@@ -2,15 +2,9 @@
 
 {% block content %}
 
-<h1 id="smartdarts">SmartDarts</h1>
-<p>Application meant to be run on SBCs (like Raspberry Pi) that have GPIO support</p>
-<p>You will also need to &quot;hack&quot; an electronic dartboard.
-    These can be found at sport stores and usually are pretty cheap.</p>
-<h2 id="supported-sbcs">Supported SBCs</h2>
-<p>I have only RPi 4 (2GB) available so it is the only one supported out-of-box for now.
-    It should work with RPi 3, 4 and 5.</p>
-<h2 id="-hacking-dartboard">&quot;Hacking&quot; dartboard</h2>
-<p>You will need to open electronic dartboard and connect pins from the actuall dartboard to the GPIO of your SBC</p>
+<div class="container">
+    {{ html | safe }}
+</div>
 
 
 {% endblock %}

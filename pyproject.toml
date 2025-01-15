@@ -6,9 +6,10 @@ readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
     "eventlet>=0.38.2",
-    "flask>=3.1.0",
     "flask-socketio>=5.5.1",
     "flask-wtf>=1.2.2",
+    "markdown>=3.7",
+    "quart>=0.20.0",
     "rpi-gpio>=0.7.1",
     "sqlalchemy>=2.0.36",
 ]

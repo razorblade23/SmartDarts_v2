@@ -1,42 +1,37 @@
-import asyncio
+from pathlib import Path
 
-from flask import Flask, jsonify, render_template
-from flask_socketio import SocketIO
+import markdown
+from quart import Quart, jsonify, render_template
 
-from dartboard.config import Chinese7x10Config
-from SBC.gpio_handlers.mock_handler import MockGPIOHandler
 from src.dartboard.board import Dartboard
+from src.dartboard.config import Chinese7x10Config
+from src.SBC.gpio_handlers.mock_handler import MockGPIOHandler
 
 dartboard = Dartboard(gpio_handler=MockGPIOHandler(), config=Chinese7x10Config())
 
-app = Flask(__name__)
-socketio = SocketIO(app, async_mode="eventlet")
+app = Quart(__name__)
 
 
 @app.get("/")
-def index():
-    return render_template("index.html")
+async def index():
+    with open(Path("./README.md"), "r", encoding="utf-8") as input_file:
+        text = input_file.read()
+    html = markdown.markdown(text)
+    return await render_template("index.html", html=html)
 
 
 @app.get("/play")
-def play():
+async def play():
     """Serve the dartboard visualization."""
-    return render_template("dartboard.html")
+    return await render_template("dartboard.html")
 
 
 @app.get("/hit")
-def hit():
-    data = {"segment": 20}
+async def hit():
+    data = {"segment": 19}
     current_hit = {
         "segment": data.get("segment"),
         "ring": data.get("ring"),
     }
     # GET: Return the current hit data
-    return jsonify(current_hit)
-
-
-if __name__ == "__main__":
-    # Create asyncio event loop
-    loop = asyncio.get_event_loop()
-    loop.create_task(dartboard.run_matrix_scan_until_hit())
-    socketio.run(app, debug=True)
+    return await jsonify(current_hit)
