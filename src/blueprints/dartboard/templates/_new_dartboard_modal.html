@@ -1,0 +1,34 @@
+<div class="modal fade" id="newDartboardModal" tabindex="-1" aria-labelledby="newDartboardModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="newDartboardModalLabel">Initialize new dartboard</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="dartboardForm">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="dartboardName" class="form-label">Dartboard name</label>
+                        <input type="text" class="form-control" id="dartboardName" name="dartboardName">
+                        <div class="form-text">Name your dartboard</div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="dartboardColumns" class="form-label">Columns</label>
+                        <input type="text" class="form-control" id="dartboardColumns" name="dartboardColumns">
+                        <div class="form-text">Pin numbers connected to columns (comma-separated)</div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="dartboardRows" class="form-label">Rows</label>
+                        <input type="text" class="form-control" id="dartboardRows" name="dartboardRows">
+                        <div class="form-text">Pin numbers connected to rows (comma-separated)</div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-outline-primary">Initialize new dartboard</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

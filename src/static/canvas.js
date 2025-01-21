@@ -1,10 +1,10 @@
 const canvas = document.getElementById('dartboard');
 
 if (window.innerHeight < window.innerWidth) {
-    var calculatedSize = window.innerHeight - 100
+    var calculatedSize = window.innerHeight - 200
     var layout = "horizontal"
 } else {
-    var calculatedSize = window.innerWidth - 100
+    var calculatedSize = window.innerWidth - 200
     var layout = "vertical"
 }
 
@@ -144,6 +144,14 @@ function drawDartboard() {
     segments.forEach(segment => segment.drawNumber());
 
     ctx.lineWidth = 1; // Reset line width for other shapes
+}
+
+function highlight_segment(segmentValue) {
+    segments.forEach(segment => {
+        if (segment.number === segmentValue) {
+            segment.highlightSegment()
+        }
+    });
 }
 
 drawDartboard();

@@ -1,0 +1,126 @@
+{% extends "layout.html" %}
+
+{% block head %}
+<style>
+    canvas {
+        display: block;
+        margin: 0 auto;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<br>
+<div class="row">
+    <div class="col-8">
+        <div class="row">
+            <div class="col-12 pb-5">
+                <div class="row">
+                    <div class="col-6 text-center">
+                        <p class="mb-1">Name:</p>
+                        <h6 class="mb-0">{{ dartboard_name }}</h6>
+                    </div>
+                    <div class="col-6 text-center">
+                        <p class="mb-1">Status:</p>
+                        <h6 class="mb-0">{{ configurator_status }}</h6>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12">
+                <canvas id="dartboard"></canvas>
+            </div>
+        </div>
+    </div>
+    <div class="col-4">
+        <div class="row h-100 align-items-center justify-content-center text-center">
+            <div class="col-12 mb-2">
+                <button class="btn btn-outline-warning" data-bs-toggle="modal"
+                    data-bs-target="#newDartboardModal">Initialize
+                    new dartboard</button>
+            </div>
+            <div class="col-12 mb-2">
+                <p>Additional content here</p>
+            </div>
+            <div class="col-12 mb-2">
+                <p>More content here</p>
+            </div>
+            <div class="col-12 mb-2">
+                <p>Final content here</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% include '_new_dartboard_modal.html' %}
+<script src="{{ url_for('static', filename='canvas.js') }}"></script>
+<script>
+    document.getElementById("dartboardForm").addEventListener("submit", async function (event) {
+        event.preventDefault(); // Stop default form submission
+
+        // Get form values
+        const dartboardName = document.getElementById("dartboardName").value.trim();
+        const dartboardColumns = document.getElementById("dartboardColumns").value.trim();
+        const dartboardRows = document.getElementById("dartboardRows").value.trim();
+
+        // Convert column & row inputs from comma-separated strings to arrays
+        const columnsArray = dartboardColumns.split(",").map(num => parseInt(num.trim(), 10)).filter(num => !isNaN(num));
+        const rowsArray = dartboardRows.split(",").map(num => parseInt(num.trim(), 10)).filter(num => !isNaN(num));
+
+        // Validate input (optional but recommended)
+        if (!dartboardName || columnsArray.length === 0 || rowsArray.length === 0) {
+            alert("Please fill out all fields correctly.");
+            return;
+        }
+
+        // Prepare data for API
+        const requestData = {
+            dartboardName: dartboardName,
+            columns: columnsArray,
+            rows: rowsArray
+        };
+
+        try {
+            const response = await fetch("{{ url_for('dartboard.configurator.load_configurator') }}", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(requestData)
+            });
+
+            if (!response.ok) {
+                throw new Error(`Server Error: ${response.statusText}`);
+            }
+            console.log("Success:", response);
+            const result = await response.json();
+            console.log("Success:", result);
+            // alert("Dartboard initialized successfully!");
+
+            // Close modal if using Bootstrap
+            const modalElement = document.querySelector("[data-bs-dismiss='modal']");
+            if (modalElement) {
+                modalElement.click();
+            }
+
+            const configureStepResponse = await fetch("{{ url_for('dartboard.configurator.calibrate_step') }}", {
+                method: "GET"
+            });
+
+            if (!configureStepResponse.ok) {
+                throw new Error(`Server Error: ${response.statusText}`);
+            }
+            console.log("configureStep:", configureStepResponse);
+            const configureResult = await configureStepResponse.json();
+            console.log("configureStep:", configureResult);
+
+
+
+        } catch (error) {
+            console.error("Error:", error);
+            alert("Failed to initialize dartboard. Please try again.");
+        }
+    });
+</script>
+
+{% endblock %}

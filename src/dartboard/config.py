@@ -1,95 +1,102 @@
-import json
+from pydantic import BaseModel, Field
+from logging import getLogger
+from ..SBC._protocol import GPIOInterface
+
+
+LOG = getLogger(__name__)
+
+class DartboardConfig(BaseModel):
+    name: str
+    matrix: dict[int, dict[str, int]] = Field(default_factory=dict)
+    rows: list[int] = Field(default_factory=list)
+    cols: list[int] = Field(default_factory=list)
+
+
+def new_board_config(name: str, cols: list[int], rows: list[int]) -> DartboardConfig:
+    config = DartboardConfig(name=name, rows=rows, cols=cols)
+    return config
 
 
 class DartboardConfigurator:
     """
-    Configurator for GPIO scanning and mapping dartboard with actuall pins
+    Configurator for GPIO scanning and mapping dartboard with actual pins
     """
 
-    def __init__(self, gpio_interface):
-        self.gpio = gpio_interface
-        self.columns = None
-        self.rows = None
-        self.matrix = {}
+    def __init__(self, gpio_interface: GPIOInterface) -> None:
+        self.gpio: GPIOInterface = gpio_interface
+        self.config = None
+        self.current_position_index = 0
 
-    def configure_gpio_pins(self, columns: list[int], rows: list[int]):
-        pass
+    def set_dartboard_config(self, dartboard_config: DartboardConfig) -> None:
+        self.config = dartboard_config
+        self._setup_pins()
+        LOG.debug("Setup pins complete")
 
-    def calibrate(self):
-        print("Starting calibration mode. Follow the instructions.")
-        dartboard_positions = [
-            "D20",
-            "S20",
-            "T20",
-            "D1",
-            "S1",
-            "T1",  # Example positions
-        ]
-        for position in dartboard_positions:
-            print(f"Please hit the {position} on the dartboard.")
-            input("Press Enter after hitting the dartboard...")
+    def _setup_pins(self) -> None:
+        for col in self.config.cols:
+            self.gpio.setup_output(col)
+        for row in self.config.rows:
+            self.gpio.setup_input(row)
 
-            # Detect the active column and row
-            active_col = None
-            active_row = None
-            for col in self.columns:
-                self.gpio.output(col, 1)
-                for row in self.rows:
-                    if self.gpio.input(row) == 1:
-                        active_col = col
-                        active_row = row
-                        break
-                self.gpio.output(col, 0)
-                if active_col and active_row:
+    def calibrate_step(self) -> dict[str, str | int] | None:
+        if self.current_position_index >= len(self._dartboard_positions):
+            return None  # Calibration complete
+
+        active_col, active_row = self._detect_position()
+
+        if active_col is None or active_row is None:
+            return {"status": "failed", "position": self._current_position}
+        else:
+            self.config.matrix[self._current_position] = {
+                "col": active_col,
+                "row": active_row,
+            }
+            self.current_position_index += 1
+            return {
+                "status": "success",
+                "position": self._current_position,
+                "col": active_col,
+                "row": active_row,
+            }
+
+    @property
+    def _dartboard_positions(self) -> list[int]:
+        return [x for x in range(1, 21)] + [25]
+
+    @property
+    def _current_position(self) -> int:
+        if self.current_position_index < len(self._dartboard_positions):
+            return self._dartboard_positions[self.current_position_index]
+        return None  # Prevent out-of-range errors
+
+    def _detect_position(self) -> tuple[int | None, int | None]:
+        active_col = None
+        active_row = None
+        for col in self.config.cols:
+            self.gpio.set_pin_high(col)
+            for row in self.config.rows:
+
+                if self.gpio.read_pin(row):
+                    active_col = col
+                    active_row = row
                     break
+            self.gpio.set_pin_low(col)
+            if active_col and active_row:
+                break
+        return active_col, active_row
 
-            if active_col is None or active_row is None:
-                print(f"Failed to detect {position}. Try again.")
-            else:
-                print(f"Registered {position} at Col: {active_col}, Row: {active_row}")
-                self.matrix[position] = {"col": active_col, "row": active_row}
+    def save_configuration_to_session(self, session: dict) -> None:
+        session["dartboard_config"] = self.config.model_dump()
+        session["dartboard_config"]["current_position_index"] = (
+            self.current_position_index
+        )
 
-    def save_configuration(self, filename: str):
-        config = {"columns": self.columns, "rows": self.rows, "matrix": self.matrix}
-        with open(filename, "w") as f:
-            json.dump(config, f, indent=4)
-        print(f"Configuration saved to {filename}")
+    def load_from_session(self, session: dict):
+        config = session.get("dartboard_config", None)
+        if config:
+            conf = DartboardConfig(**config)
+            self.config = conf
+            self.current_position_index = config["current_position_index"]
 
-    def load_configuration(self, filename: str):
-        with open(filename, "r") as f:
-            config = json.load(f)
-        self.columns = config["columns"]
-        self.rows = config["rows"]
-        self.matrix = config["matrix"]
-        print("Configuration loaded successfully.")
-
-
-class Chinese7x10Config:
-    """
-    Configuration for a Chinese dartboard
-    found at local sport shop (7x10 matrix).
-    """
-
-    @property
-    def matrix(self) -> list[list[int]]:
-        return [
-            [7, 19, 3, 17, 15, 16, 8, 11, 14, 2],
-            [1, 18, 4, 13, 10, 20, 5, 12, 9, 6],
-            [7, 19, 3, 17, 15, 16, 8, 11, 14, 2],
-            [1, 18, 4, 13, 10, 20, 5, 12, 9, 6],
-            [7, 19, 3, 17, 15, 16, 8, 11, 14, 2],
-            [1, 18, 4, 13, 10, 20, 5, 12, 9, 6],
-            [7, 19, 3, 17, 15, 16, 8, 11, 14, 2],
-        ]
-
-    @property
-    def col_pins(self) -> list[int]:
-        return [5, 22, 10, 17, 9, 27, 11]
-
-    @property
-    def row_pins(self) -> list[int]:
-        return [14, 15, 18, 23, 25, 8, 7, 12, 16, 24]
-
-    @property
-    def multiplier_pins(self) -> dict[int, list[int]]:
-        return {1: [9, 22], 2: [11, 27], 3: [5, 17]}
+    def reset_session(self, session: dict) -> None:
+        session["dartboard_config"] = None

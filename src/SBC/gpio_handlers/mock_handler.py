@@ -19,7 +19,8 @@ class MockGPIOHandler:
     def read_pin(self, pin: int) -> bool:
         if pin not in self.input_pins:
             raise RuntimeError(f"Pin {pin} is not configured as input.")
-        return self.pin_states[pin] == 1
+
+        return True  # self.pin_states[pin] == 1
 
     # Additional helper methods for testing
     def simulate_pin_high(self, pin: int):
