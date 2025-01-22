@@ -1,43 +1,47 @@
-from .enums import GameType
+from .enums import GameType, OutRule
 from .game_modes import CricketGame, X01Game
+from .players import CricketPlayer, X01Player
 
 
 class DartGameEngine:
     """Manages dart game sessions."""
 
-    def __init__(self, game_type: str, players, **kwargs):
-        self.game_type = GameType(game_type)
+    def __init__(
+        self, game_type: GameType, players: list[X01Player, CricketPlayer], **kwargs
+    ):
+        self.game_type = game_type
 
         match self.game_type:
             case GameType.X01:
-                self.state = X01Game(
+                self.game = X01Game(
                     players,
                     starting_score=kwargs.get("starting_score", 501),
-                    out_rule=kwargs.get("out_rule", "SINGLE_OUT"),
+                    out_rule=kwargs.get("out_rule", OutRule.SINGLE_OUT),
                 )
             case GameType.CRICKET:
-                self.state = CricketGame(players)
-            # Future games can be added easily
+                self.game = CricketGame(players)
+
+            # Future games can be added easily here
 
     def throw_darts(self, player_name: str, darts: list[dict[str, int]]):
         """Handles a turn by passing responsibility to the game mode."""
-        player = next(p for p in self.state.players if p.name == player_name)
+        player = next(p for p in self.game.players if p.name == player_name)
 
-        self.state.throw_darts(player, darts)
-        self.state.next_turn()
+        self.game.throw_darts(player, darts)
+        self.game.next_turn()
 
     def add_player(self, name: str):
         """Registers a new player to the game."""
-        self.state.add_player(name)
+        self.game.add_player(name)
 
     def is_game_over(self):
         """Checks if the game has ended."""
-        return self.state.winner is not None
+        return self.game.winner is not None
 
     @property
     def winner(self):
         """Returns the winner's name."""
-        return self.state.winner
+        return self.game.winner
 
     ## TODO We will deal with databases later
     # def save_to_database(self, db_session):
@@ -54,7 +58,7 @@ class DartGameEngine:
     #     db_session.add(game_session)
     #     db_session.commit()
 
-    #     for player in self.state.players:
+    #     for player in self.game.players:
     #         db_player = db_session.query(Player).filter_by(name=player.name).first()
     #         if not db_player:
     #             db_player = Player(name=player.name)
