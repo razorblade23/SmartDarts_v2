@@ -1,6 +1,6 @@
 from logging import getLogger
 
-from quart import Blueprint
+from flask import Blueprint
 
 from .configurator import configurator_router
 

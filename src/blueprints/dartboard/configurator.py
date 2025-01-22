@@ -1,7 +1,7 @@
 import json
 from logging import getLogger
 
-from quart import Blueprint, render_template, request, session
+from flask import Blueprint, render_template, request, session
 
 from ...dartboard.config import DartboardConfig, DartboardConfigurator
 from ...SBC.gpio_handlers.mock_handler import MockGPIOHandler
@@ -25,14 +25,14 @@ def load_session_configurator():
 
 
 @configurator_router.route("/")
-async def configurator_index():
+def configurator_index():
     if configurator.config:
         dartboard_name = configurator.config.name
         configurator_status = "Not configured"
     else:
         dartboard_name = "Not configured"
         configurator_status = "Not configured"
-    return await render_template(
+    return render_template(
         "dartboard_index.html",
         dartboard_name=dartboard_name,
         configurator_status=configurator_status,
@@ -40,8 +40,8 @@ async def configurator_index():
 
 
 @configurator_router.post("/load_configurator")
-async def load_configurator():
-    form_data: dict = await request.json
+def load_configurator():
+    form_data: dict = request.json
     print(type(form_data), form_data)
     dartboard_name = form_data.get("dartboardName")
     dartboard_columns = form_data.get("columns")

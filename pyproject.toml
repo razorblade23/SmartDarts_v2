@@ -5,12 +5,10 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
-    "eventlet>=0.38.2",
-    "flask-socketio>=5.5.1",
+    "flask>=3.1.0",
+    "flask-sqlalchemy>=3.1.1",
     "flask-wtf>=1.2.2",
+    "gunicorn>=23.0.0",
     "markdown>=3.7",
     "pydantic>=2.10.5",
-    "quart>=0.20.0",
-    "rpi-gpio>=0.7.1",
-    "sqlalchemy>=2.0.36",
 ]
