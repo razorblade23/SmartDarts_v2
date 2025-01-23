@@ -1,4 +1,4 @@
-[![Tests](https://github.com/razorblade23/SmartDarts_v2_sbc/actions/workflows/python-app.yml/badge.svg?branch=master&event=push)](https://github.com/razorblade23/SmartDarts_v2_sbc/actions/workflows/python-app.yml)
+[![build](https://github.com/razorblade23/SmartDarts_v2_sbc/actions/workflows/python-app.yml/badge.svg?branch=master&event=push)](https://github.com/razorblade23/SmartDarts_v2_sbc/actions/workflows/python-app.yml)
 
 
 # SmartDarts
