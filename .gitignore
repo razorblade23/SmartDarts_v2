@@ -11,3 +11,6 @@ wheels/
 
 # PyTest generated files
 .pytest_cache
+
+# VSCode generated files
+.vscode
