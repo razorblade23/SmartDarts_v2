@@ -1,3 +1,10 @@
+from typing import Protocol
+
+
+class Player(Protocol):
+    def record_turn(self, darts: list[dict[str, int]]): ...
+
+
 class X01Player:
     """Represents a player in the game with score tracking."""
 

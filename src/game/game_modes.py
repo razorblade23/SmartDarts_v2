@@ -75,6 +75,10 @@ class CricketGame(GameMode):
         super().__init__(players)
         self.closed_numbers = {player.name: {} for player in players}  # Track hits
 
+    def add_player(self, player_name: str):
+        """Adds a player to the game."""
+        self.players.append(CricketPlayer(player_name))
+
     def throw_darts(self, player, darts: list[dict[str, int]]):
         for dart in darts:
             num = dart["score"]

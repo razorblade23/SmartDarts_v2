@@ -10,6 +10,7 @@ class DartGameEngine:
         self, game_type: GameType, players: list[X01Player, CricketPlayer], **kwargs
     ):
         self.game_type = game_type
+        self.game_started = False
 
         match self.game_type:
             case GameType.X01:
@@ -22,6 +23,9 @@ class DartGameEngine:
                 self.game = CricketGame(players)
 
             # Future games can be added easily here
+
+    def start_game(self):
+        self.game_started = True
 
     def throw_darts(self, player_name: str, darts: list[dict[str, int]]):
         """Handles a turn by passing responsibility to the game mode."""
@@ -76,3 +80,10 @@ class DartGameEngine:
     #             db_session.add(turn_entry)
 
     #     db_session.commit()
+
+
+class GameFactory:
+    games = {}
+
+    def add_game(self, game_id: str, game: DartGameEngine):
+        self.games[game_id] = game
