@@ -1,10 +1,10 @@
 from logging import getLogger
 from uuid import uuid4
 
-from flask import Blueprint, abort, jsonify, request
+from flask import Blueprint, jsonify, request
 
-from ...game.enums import GameType
-from ...game.game_engine import DartGameEngine
+from ...game_logic.enums import GameType
+from ...game_logic.game_engine import DartGameEngine
 
 game_router = Blueprint(
     "game", __name__, template_folder="templates", static_folder="static"
@@ -28,7 +28,7 @@ def new_game():
     data = request.json
     game_type = data.get("game_type")
     if not game_type:
-        abort(403)
+        return jsonify({"error": "Game type missing from request"}), 403
 
     gametype = GameType(game_type)
 
@@ -41,12 +41,13 @@ def new_game():
     return jsonify({"game_id": game_id, "message": "Game created successfully!"}), 201
 
 
-@game_router.route("/str:<game_id>/add_player")
+@game_router.route("/<game_id>/add_player")
 def add_player_to_game(game_id: str):
     data = request.json
     player_name = data.get("player_name")
 
     if not game_id_in_games:
+        LOG.error(f"No matching ID found: {game_id}")
         return _no_game_id_found_error(game_id)
 
     game = games[game_id]
@@ -56,11 +57,12 @@ def add_player_to_game(game_id: str):
     return jsonify({"message": f"Player {player_name} added to game {game_id}."}), 200
 
 
-@game_router.route("/str:<game_id>/start", methods=["POST"])
+@game_router.route("/<game_id>/start", methods=["POST"])
 def start_game(game_id: str):
     """Start the game."""
 
     if not game_id_in_games:
+        LOG.error(f"No matching ID found: {game_id}")
         return _no_game_id_found_error(game_id)
 
     game = games[game_id]
@@ -69,35 +71,46 @@ def start_game(game_id: str):
     return jsonify({"message": f"Game {game_id} started."}), 200
 
 
-@game_router.route("/str:<game_id>/throw", methods=["POST"])
+@game_router.route("/<game_id>/throw", methods=["POST"])
 def throw_darts(game_id: str):
     """Handle dart throws."""
     data = request.json
-    player_name = data.get("player_name")
-    darts = data.get("darts")  # Example: [{"score": 20, "multiplier": 2}, ...]
+    dart = data.get("dart")  # Example: {"score": 20, "multiplier": 2}
+    LOG.debug(f"Throwing dart: {dart=}")
 
     if not game_id_in_games:
+        LOG.error(f"No matching ID found: {game_id}")
         return _no_game_id_found_error(game_id)
 
     game = games[game_id]
+    LOG.debug(f"Found {game=}")
 
     try:
-        game["engine"].throw_darts(player_name, darts)
+        game["engine"].throw_dart(dart)
     except Exception as e:
         return jsonify({"error": str(e)}), 400
-
-    ## TODO Return actuall state of the game
+    state = game["engine"].get_game_state()
+    LOG.info(f"Throw {dart=} in game {game_id=}")
+    current_player_name = (
+        game["engine"].game.current_player.name
+        if game["engine"].game.current_player
+        else None
+    )
     return jsonify(
-        {"message": f"Player {player_name} threw darts.", "state": True}
+        {
+            "message": f"Player {current_player_name=} threw {dart=}.",
+            "states": state,
+        }
     ), 200
 
 
-@game_router.route("/str:<game_id>", methods=["GET"])
+@game_router.route("/<game_id>", methods=["GET"])
 def get_game_state(game_id: str):
     """Get the current state of the game."""
-    if not game_id_in_games:
+    game = games.get(game_id)
+    if not game:
+        LOG.error(f"No matching ID found: {game_id}")
         return _no_game_id_found_error(game_id)
 
-    game = games[game_id]
-    ## TODO Return actuall state of the game
-    return jsonify({"state": True}), 200
+    state = game["engine"].get_game_state()
+    return jsonify({"states": state}), 200

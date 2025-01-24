@@ -6,7 +6,7 @@ def client():
     """Create a test client for the Flask app."""
     from flask import Flask
 
-    from src.blueprints.game_routes.game import game_router
+    from src.routes.api.game import game_router
 
     app = Flask(__name__)
     app.config["TESTING"] = True
@@ -34,9 +34,7 @@ def test_add_player(client):
     game_id = create_response.get_json()["game_id"]
 
     # Add player
-    response = client.get(
-        f"/game/str:{game_id}/add_player", json={"player_name": "Alice"}
-    )
+    response = client.get(f"/game/{game_id}/add_player", json={"player_name": "Alice"})
     data = response.get_json()
 
     assert response.status_code == 200
@@ -48,7 +46,7 @@ def test_start_game(client):
     create_response = client.post("/game/create", json={"game_type": "X01"})
     game_id = create_response.get_json()["game_id"]
 
-    response = client.post(f"/game/str:{game_id}/start")
+    response = client.post(f"/game/{game_id}/start")
     data = response.get_json()
 
     assert response.status_code == 200
@@ -60,17 +58,17 @@ def test_throw_darts(client):
     create_response = client.post("/game/create", json={"game_type": "X01"})
     game_id = create_response.get_json()["game_id"]
 
-    client.get(f"/game/str:{game_id}/add_player", json={"player_name": "Alice"})
+    client.get(f"/game/{game_id}/add_player", json={"player_name": "Alice"})
 
     response = client.post(
-        f"/game/str:{game_id}/throw",
+        f"/game/{game_id}/throw",
         json={"player_name": "Alice", "darts": [{"score": 20, "multiplier": 2}]},
     )
     data = response.get_json()
 
     assert response.status_code == 200
     assert data["message"] == "Player Alice threw darts."
-    assert "state" in data
+    assert "states" in data
 
 
 def test_get_game_state(client):
@@ -78,17 +76,17 @@ def test_get_game_state(client):
     create_response = client.post("/game/create", json={"game_type": "Cricket"})
     game_id = create_response.get_json()["game_id"]
 
-    response = client.get(f"/game/str:{game_id}")
+    response = client.get(f"/game/{game_id}")
     data = response.get_json()
 
     assert response.status_code == 200
-    assert "state" in data
+    assert "states" in data
 
 
 def test_invalid_game_id(client):
     """Test accessing an invalid game ID."""
-    response = client.get("/game/str:invalid_id")
+    response = client.get("/game/invalid_id")
     data = response.get_json()
 
     assert response.status_code == 404
-    assert data["error"] == "Game not found"
+    assert data["error"] == "Game with game_id='invalid_id' not found"

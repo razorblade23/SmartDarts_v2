@@ -1,5 +1,5 @@
-from src.game.enums import GameType
-from src.game.game_engine import DartGameEngine
+from src.game_logic.enums import GameType
+from src.game_logic.game_engine import DartGameEngine
 
 
 def test_x01_scoring():

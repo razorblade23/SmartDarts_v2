@@ -1,5 +1,7 @@
+from typing import Any
+
 from .enums import GameType, OutRule
-from .game_modes import CricketGame, X01Game
+from .game_modes import CricketGame, Dart, X01Game
 from .players import CricketPlayer, X01Player
 
 
@@ -15,7 +17,6 @@ class DartGameEngine:
         match self.game_type:
             case GameType.X01:
                 self.game = X01Game(
-                    players,
                     starting_score=kwargs.get("starting_score", 501),
                     out_rule=kwargs.get("out_rule", OutRule.SINGLE_OUT),
                 )
@@ -27,12 +28,12 @@ class DartGameEngine:
     def start_game(self):
         self.game_started = True
 
-    def throw_darts(self, player_name: str, darts: list[dict[str, int]]):
-        """Handles a turn by passing responsibility to the game mode."""
-        player = next(p for p in self.game.players if p.name == player_name)
+    def get_game_state(self) -> list[dict[str, Any]]:
+        return self.game.get_stats()
 
-        self.game.throw_darts(player, darts)
-        self.game.next_turn()
+    def throw_dart(self, dart: dict[str, int]):
+        """Handles a turn by passing responsibility to the game mode."""
+        self.game.throw_dart(Dart(**dart))
 
     def add_player(self, name: str):
         """Registers a new player to the game."""
@@ -80,10 +81,3 @@ class DartGameEngine:
     #             db_session.add(turn_entry)
 
     #     db_session.commit()
-
-
-class GameFactory:
-    games = {}
-
-    def add_game(self, game_id: str, game: DartGameEngine):
-        self.games[game_id] = game

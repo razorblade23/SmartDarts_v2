@@ -2,6 +2,12 @@ from typing import Protocol
 
 
 class Player(Protocol):
+    def __init__(self, name: str, starting_score: int):
+        self.name = name
+        self.starting_score = starting_score
+        self.score = starting_score
+        self.turns = []
+
     def record_turn(self, darts: list[dict[str, int]]): ...
 
 
@@ -12,18 +18,24 @@ class X01Player:
         self.name = name
         self.starting_score = starting_score
         self.score = starting_score
-        self.turns = []
+        self.turns: list[list[dict[str, int]]] = []
+        self.turn: list[dict[str, int]] = []
 
-    def record_turn(self, score_before: int, darts: list[dict[str, int]]):
+    def record_turn(self, score_before: int, score: int, score_multiplier: int):
         """Records a turn where darts were thrown."""
         score_after = self.score
-        self.turns.append(
+        self.turn.append(
             {
                 "score_before": score_before,
                 "score_after": score_after,
-                "darts": darts,
+                "score": score,
+                "score_multiplier": score_multiplier,
             }
         )
+
+    def end_turn(self):
+        self.turns.append(self.turn)
+        self.turn = []
 
 
 class CricketPlayer:

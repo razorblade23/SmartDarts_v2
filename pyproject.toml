@@ -11,5 +11,13 @@ dependencies = [
     "gunicorn>=23.0.0",
     "markdown>=3.7",
     "pydantic>=2.10.5",
+    "requests>=2.32.3",
+]
+
+[project.optional-dependencies]
+test = [
     "pytest>=8.3.4",
+]
+rpi = [
+    "rpi-gpio>=0.7.1",
 ]

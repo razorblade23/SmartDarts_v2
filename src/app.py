@@ -4,8 +4,8 @@ from pathlib import Path
 import markdown
 from flask import Flask, render_template
 
-from src.blueprints.dartboard.dartboard import dartboard_router
-from src.blueprints.game_routes.game import game_router
+from src.routes.api.game import game_router
+from src.routes.view.dartboard.dartboard import dartboard_router
 
 # Set up logger
 logging.basicConfig(

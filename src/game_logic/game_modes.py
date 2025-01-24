@@ -1,18 +1,25 @@
 from abc import ABC, abstractmethod
 
+from pydantic import BaseModel
+
 from .enums import OutRule
-from .players import CricketPlayer, X01Player
+from .players import CricketPlayer, Player, X01Player
+
+
+class Dart(BaseModel):
+    score: int
+    multiplier: int
 
 
 class GameMode(ABC):
     """Base class for all dart game modes."""
 
-    def __init__(self, players: list):
-        self.players = players
-        self.current_player_idx = 0
+    def __init__(self):
+        self.players: list[Player] = []
+        self.score: int = 0
 
     @abstractmethod
-    def throw_darts(self, player, darts: list[dict[str, int]]):
+    def throw_dart(self, dart: dict[str, int]):
         """Handles dart throws, must be implemented by each game type."""
         pass
 
@@ -23,7 +30,7 @@ class GameMode(ABC):
 
     def next_turn(self):
         """Moves to the next player."""
-        self.current_player_idx = (self.current_player_idx + 1) % len(self.players)
+        pass
 
 
 class X01Game(GameMode):
@@ -31,41 +38,67 @@ class X01Game(GameMode):
 
     def __init__(
         self,
-        players: list[X01Player],
         starting_score: int = 501,
+        darts_per_player: int = 3,
         out_rule: OutRule = OutRule.SINGLE_OUT,
     ):
-        super().__init__(players)
         self.starting_score = starting_score
+        self.darts_per_player = darts_per_player
         self.out_rule = out_rule
-        self.players = players
-        for player in self.players:
-            player.score = starting_score
+        self.players: list[X01Player] = []
+        self.current_player: X01Player | None = None
+        self.current_player_index = 0
 
     def add_player(self, player_name: str):
         """Adds a player to the game."""
         self.players.append(X01Player(player_name, self.starting_score))
+
+    def get_stats(self):
+        stats = []
+
+        for player in self.players:
+            p_stats = {
+                "name": player.name,
+                "starting_score": player.starting_score,
+                "current_score": player.score,
+                "turns": player.turns,
+            }
+            stats.append(p_stats)
+        return stats
 
     def check_winner(self, player: X01Player):
         """Checks if someone has closed all numbers."""
         self.winner = player.name
         ## TODO Implement rules based winner declaration (Double out, Master out, etc...)
 
-    def throw_darts(self, player: X01Player, darts: list[dict[str, int]]):
-        initial_score = player.score  # Store score before throwing
+    def throw_dart(self, dart: Dart):
+        self.current_player = self.players[self.current_player_index]
 
-        for dart in darts:
-            points = dart["score"] * dart["multiplier"]
-            player.score -= points
+        self.current_player.record_turn(
+            score_before=self.current_player.score,
+            score=dart.score,
+            score_multiplier=dart.multiplier,
+        )
+
+        initial_score = self.current_player.score  # Store score before throwing
+
+        points = dart.score * dart.multiplier
+        self.current_player.score -= points
 
         # BUST LOGIC: If the score goes below 0, reset it to the initial score
-        if player.score < 0:
-            player.score = initial_score  # Reset due to bust
+        if self.current_player.score < 0:
+            self.current_player.score = initial_score  # Reset due to bust
             return  # Bust, so turn ends immediately
 
         # WIN CONDITION: Player must reach exactly 0
-        if player.score == 0:
-            self.check_winner(player)
+        if self.current_player.score == 0:
+            self.check_winner(self.current_player)
+
+        if len(self.current_player.turn) == 3:
+            self.current_player.end_turn()
+            self.current_player_index += 1
+            if self.current_player_index > len(self.players):
+                self.current_player_index = 0
 
 
 class CricketGame(GameMode):
@@ -78,6 +111,18 @@ class CricketGame(GameMode):
     def add_player(self, player_name: str):
         """Adds a player to the game."""
         self.players.append(CricketPlayer(player_name))
+
+    def get_stats(self):
+        stats = []
+
+        for player in self.players:
+            p_stats = {
+                "starting_score": player.starting_score,
+                "current_score": player.score,
+                "turns": player.turns,
+            }
+            stats.append(p_stats)
+        return stats
 
     def throw_darts(self, player, darts: list[dict[str, int]]):
         for dart in darts:
