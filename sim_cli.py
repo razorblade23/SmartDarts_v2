@@ -63,9 +63,8 @@ def req_throw_darts(game_id: str, dart: dict[str, int]) -> list:
     )
     if response.ok:
         data: dict = response.json()
-        print(data.get("message"))
-        states = data.get("states")
-        return states
+        status = data.get("status")
+        return status
 
 
 def req_get_game_state(game_id: str):
@@ -121,6 +120,6 @@ if __name__ == "__main__":
             multiplier = 4
 
         dart = {"score": score, "multiplier": multiplier}
-        states = req_throw_darts(game_id=game_id, dart=dart)
-        print(states)
+        status = req_throw_darts(game_id=game_id, dart=dart)
+        print(status)
         print("-" * 80)

@@ -88,18 +88,18 @@ def throw_darts(game_id: str):
     try:
         game["engine"].throw_dart(dart)
     except Exception as e:
+        LOG.error(e)
         return jsonify({"error": str(e)}), 400
-    state = game["engine"].get_game_state()
     LOG.info(f"Throw {dart=} in game {game_id=}")
-    current_player_name = (
-        game["engine"].game.current_player.name
-        if game["engine"].game.current_player
-        else None
-    )
+
+    current_player_stats = {
+        "name": game["engine"].game.current_player.name,
+        "current_score": game["engine"].game.current_player.score,
+    }
+
     return jsonify(
         {
-            "message": f"Player {current_player_name=} threw {dart=}.",
-            "states": state,
+            "status": current_player_stats,
         }
     ), 200
 

@@ -28,10 +28,6 @@ class GameMode(ABC):
         """Checks if the game is over."""
         pass
 
-    def next_turn(self):
-        """Moves to the next player."""
-        pass
-
 
 class X01Game(GameMode):
     """Handles X01 dart game logic (301, 501, etc.)."""
@@ -94,10 +90,10 @@ class X01Game(GameMode):
         if self.current_player.score == 0:
             self.check_winner(self.current_player)
 
-        if len(self.current_player.turn) == 3:
+        if len(self.current_player.turn) == self.darts_per_player:
             self.current_player.end_turn()
             self.current_player_index += 1
-            if self.current_player_index > len(self.players):
+            if self.current_player_index == len(self.players):
                 self.current_player_index = 0
 
 
