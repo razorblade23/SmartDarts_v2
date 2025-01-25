@@ -5,7 +5,7 @@ import markdown
 from flask import Flask, render_template
 
 from src.routes.api import api_router
-from src.routes.views.dartboard_conf_view.dartboard_view import dartboard_router
+from src.routes.views import views_router
 
 # Set up logger
 logging.basicConfig(
@@ -19,7 +19,7 @@ app = Flask(__name__)
 app.secret_key = "your_secret_key"
 
 
-app.register_blueprint(dartboard_router, url_prefix="/dartboard")
+app.register_blueprint(views_router)
 app.register_blueprint(api_router, url_prefix="/api")
 
 

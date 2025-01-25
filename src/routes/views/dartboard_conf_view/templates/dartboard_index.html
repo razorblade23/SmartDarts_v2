@@ -81,7 +81,7 @@
         };
 
         try {
-            const response = await fetch("{{ url_for('dartboard.configurator.load_configurator') }}", {
+            const response = await fetch("{{ url_for('views.dartboard.configurator.load_configurator') }}", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -103,7 +103,7 @@
                 modalElement.click();
             }
 
-            const configureStepResponse = await fetch("{{ url_for('dartboard.configurator.calibrate_step') }}", {
+            const configureStepResponse = await fetch("{{ url_for('views.dartboard.configurator.calibrate_step') }}", {
                 method: "GET"
             });
 

@@ -7,11 +7,21 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarNavDropdown">
             <ul class="navbar-nav">
-                <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="#">Home</a>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                        aria-expanded="false">
+                        Start game
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item"
+                                href="{{ url_for('views.game_view.new_game', game_type='x01') }}">X01</a></li>
+                        <li><a class="dropdown-item" href="#" disabled>Cricket</a></li>
+                    </ul>
                 </li>
+
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ url_for('dartboard.configurator.configurator_index') }}">Dartboard
+                    <a class="nav-link"
+                        href="{{ url_for('views.dartboard.configurator.configurator_index') }}">Dartboard
                         setup</a>
                 </li>
                 <li class="nav-item">

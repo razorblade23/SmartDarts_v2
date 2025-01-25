@@ -1,0 +1,57 @@
+{% extends "layout.html" %}
+
+{% from "_game_macros.html" import X01StartingScoreTile, X01GameOptionsTile %}
+
+{% block content %}
+<br>
+<div class="container">
+    <div class="row d-flex justify-content-around text-center">
+        <h6>Game options</h6>
+        <br>
+        {{ X01GameOptionsTile("Standard", default=True) }}
+    </div>
+    <div class="row d-flex justify-content-around text-center">
+        <h6>Starting score</h6>
+        <br>
+        {{ X01StartingScoreTile(180, default=True) }}
+        {{ X01StartingScoreTile(301) }}
+        {{ X01StartingScoreTile(501) }}
+        {{ X01StartingScoreTile(701) }}
+        {{ X01StartingScoreTile(901) }}
+    </div>
+    <br>
+    <div class="row">
+        <div class="col-12 text-center">
+            <div class="row">
+                <div class="col-6 ps-5">
+                    <input type="text" class="form-control" id="playerName" name="playerName" placeholder="Player name">
+                </div>
+                <div class="col-6 d-flex justify-content-end">
+                    <button type="button" class="btn btn-outline-success me-1"
+                        hx-post="{{ url_for('views.game_view.add_player') }}" hx-include="#playerName"
+                        hx-trigger="click" hx-target="#playerReadyArea" hx-swap="beforeend">
+                        Add player
+                    </button>
+                    <button type="button" class="btn btn-outline-secondary me-1"
+                        hx-post="{{ url_for('views.game_view.add_player') }}" hx-include="#playerName"
+                        hx-trigger="click" hx-target="#playerReadyArea" hx-swap="beforeend">
+                        Add bot
+                    </button>
+                    <button type="button" class="btn btn-outline-primary me-1"
+                        hx-post="{{ url_for('views.game_view.add_player') }}" hx-include="#playerName"
+                        hx-trigger="click" hx-target="#playerReadyArea" hx-swap="beforeend">
+                        Start game
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<br>
+<div class="container">
+    <div class="row" id="playerReadyArea">
+
+    </div>
+</div>
+
+{% endblock %}
