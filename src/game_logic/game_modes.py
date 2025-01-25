@@ -90,6 +90,7 @@ class X01Game(GameMode):
         if self.current_player.score == 0:
             self.check_winner(self.current_player)
 
+        # END TURN: Player must throw all darts then its next players turn
         if len(self.current_player.turn) == self.darts_per_player:
             self.current_player.end_turn()
             self.current_player_index += 1
@@ -100,13 +101,13 @@ class X01Game(GameMode):
 class CricketGame(GameMode):
     """Handles Cricket dart game logic."""
 
-    def __init__(self, players: list[CricketPlayer]):
-        super().__init__(players)
-        self.closed_numbers = {player.name: {} for player in players}  # Track hits
+    def __init__(self):
+        self.closed_numbers = {}
 
     def add_player(self, player_name: str):
         """Adds a player to the game."""
         self.players.append(CricketPlayer(player_name))
+        self.closed_numbers[player_name] = {}
 
     def get_stats(self):
         stats = []
@@ -120,7 +121,7 @@ class CricketGame(GameMode):
             stats.append(p_stats)
         return stats
 
-    def throw_darts(self, player, darts: list[dict[str, int]]):
+    def throw_dart(self, player, darts: list[dict[str, int]]):
         for dart in darts:
             num = dart["score"]
             multiplier = dart["multiplier"]

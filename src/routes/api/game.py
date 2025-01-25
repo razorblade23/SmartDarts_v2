@@ -7,7 +7,7 @@ from ...game_logic.enums import GameType
 from ...game_logic.game_engine import DartGameEngine
 
 game_router = Blueprint(
-    "game", __name__, template_folder="templates", static_folder="static"
+    "game_api", __name__, template_folder="templates", static_folder="static"
 )
 
 LOG = getLogger(__name__)

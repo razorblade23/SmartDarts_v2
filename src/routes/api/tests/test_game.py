@@ -6,12 +6,12 @@ def client():
     """Create a test client for the Flask app."""
     from flask import Flask
 
-    from src.routes.api.game import game_router
+    from src.routes.api import api_router
 
     app = Flask(__name__)
     app.config["TESTING"] = True
     app.secret_key = "test_secret_key"
-    app.register_blueprint(game_router, url_prefix="/game")
+    app.register_blueprint(api_router, url_prefix="/api")
 
     with app.test_client() as client:
         yield client
@@ -19,7 +19,7 @@ def client():
 
 def test_create_game(client):
     """Test game creation."""
-    response = client.post("/game/create", json={"game_type": "X01"})
+    response = client.post("/api/game/create", json={"game_type": "X01"})
     data = response.get_json()
 
     assert response.status_code == 201
@@ -30,11 +30,13 @@ def test_create_game(client):
 def test_add_player(client):
     """Test adding a player to a game."""
     # Create a game first
-    create_response = client.post("/game/create", json={"game_type": "Cricket"})
+    create_response = client.post("/api/game/create", json={"game_type": "X01"})
     game_id = create_response.get_json()["game_id"]
 
     # Add player
-    response = client.get(f"/game/{game_id}/add_player", json={"player_name": "Alice"})
+    response = client.get(
+        f"/api/game/{game_id}/add_player", json={"player_name": "Alice"}
+    )
     data = response.get_json()
 
     assert response.status_code == 200
@@ -43,10 +45,10 @@ def test_add_player(client):
 
 def test_start_game(client):
     """Test starting a game."""
-    create_response = client.post("/game/create", json={"game_type": "X01"})
+    create_response = client.post("/api/game/create", json={"game_type": "X01"})
     game_id = create_response.get_json()["game_id"]
 
-    response = client.post(f"/game/{game_id}/start")
+    response = client.post(f"/api/game/{game_id}/start")
     data = response.get_json()
 
     assert response.status_code == 200
@@ -55,10 +57,10 @@ def test_start_game(client):
 
 def test_throw_darts(client):
     """Test throwing darts."""
-    create_response = client.post("/game/create", json={"game_type": "X01"})
+    create_response = client.post("/api/game/create", json={"game_type": "X01"})
     game_id = create_response.get_json()["game_id"]
 
-    client.get(f"/game/{game_id}/add_player", json={"player_name": "Alice"})
+    client.get(f"/api/game/{game_id}/add_player", json={"player_name": "Alice"})
 
     response = client.post(
         f"/game/{game_id}/throw",
@@ -73,10 +75,10 @@ def test_throw_darts(client):
 
 def test_get_game_state(client):
     """Test retrieving game state."""
-    create_response = client.post("/game/create", json={"game_type": "Cricket"})
+    create_response = client.post("/api/game/create", json={"game_type": "X01"})
     game_id = create_response.get_json()["game_id"]
 
-    response = client.get(f"/game/{game_id}")
+    response = client.get(f"/api/game/{game_id}")
     data = response.get_json()
 
     assert response.status_code == 200
@@ -85,7 +87,7 @@ def test_get_game_state(client):
 
 def test_invalid_game_id(client):
     """Test accessing an invalid game ID."""
-    response = client.get("/game/invalid_id")
+    response = client.get("/api/game/invalid_id")
     data = response.get_json()
 
     assert response.status_code == 404

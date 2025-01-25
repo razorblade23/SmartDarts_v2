@@ -2,15 +2,12 @@ from typing import Any
 
 from .enums import GameType, OutRule
 from .game_modes import CricketGame, Dart, X01Game
-from .players import CricketPlayer, X01Player
 
 
 class DartGameEngine:
     """Manages dart game sessions."""
 
-    def __init__(
-        self, game_type: GameType, players: list[X01Player, CricketPlayer], **kwargs
-    ):
+    def __init__(self, game_type: GameType, **kwargs):
         self.game_type = game_type
         self.game_started = False
 
@@ -21,7 +18,7 @@ class DartGameEngine:
                     out_rule=kwargs.get("out_rule", OutRule.SINGLE_OUT),
                 )
             case GameType.CRICKET:
-                self.game = CricketGame(players)
+                self.game = CricketGame()
 
             # Future games can be added easily here
 
@@ -34,6 +31,11 @@ class DartGameEngine:
     def throw_dart(self, dart: dict[str, int]):
         """Handles a turn by passing responsibility to the game mode."""
         self.game.throw_dart(Dart(**dart))
+
+    def get_player_score(self, player_name: str) -> int:
+        for player in self.game.players:
+            if player.name == player_name:
+                return player.score
 
     def add_player(self, name: str):
         """Registers a new player to the game."""

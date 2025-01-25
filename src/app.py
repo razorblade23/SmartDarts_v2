@@ -4,8 +4,8 @@ from pathlib import Path
 import markdown
 from flask import Flask, render_template
 
-from src.routes.api.game import game_router
-from src.routes.view.dartboard.dartboard import dartboard_router
+from src.routes.api import api_router
+from src.routes.views.dartboard_conf_view.dartboard_view import dartboard_router
 
 # Set up logger
 logging.basicConfig(
@@ -20,7 +20,7 @@ app.secret_key = "your_secret_key"
 
 
 app.register_blueprint(dartboard_router, url_prefix="/dartboard")
-app.register_blueprint(game_router, url_prefix="/game")
+app.register_blueprint(api_router, url_prefix="/api")
 
 
 @app.get("/")
