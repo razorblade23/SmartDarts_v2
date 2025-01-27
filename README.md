@@ -85,7 +85,8 @@ To use SmartDarts (as intended), you will need:
    ```bash
    git clone https://github.com/razorblade23/SmartDarts_v2_sbc
    
-   cd smartdarts
+   cd SmartDarts_v2_sbc
+
    ```
 2. Install the necessary dependencies:
    ```bash
