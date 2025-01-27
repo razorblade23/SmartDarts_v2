@@ -21,14 +21,15 @@ THIS IS A WORK IN PROGRESS AND LOTS OF FEATURES ARE MISSING.
 
 - **Player Support**:
   - Supports up to 8 players in a single game session. (X01 game (single out) only for now)
-  -- WARNING: Lacks proper boundaries and will go beyond zero
+  - WARNING: Lacks proper boundaries and will go beyond zero
 
 - **Game Modes**:
   1. **X01**: 
-     - Popular game modes such as 301, 501, 701, and more. (only "Single Out" mode for now implemented)
+     - 180, 301, 501, 701, 901 -> Single Out
 
 - **Simulation Mode**:
-  - Its possible to run the application in simulation mode. ** This DOES NOT require hardware components, wiring and physical dartboard, and is used for testing the application logic.
+  - Its possible to run the application in simulation mode.
+  - This DOES NOT require hardware components, wiring and physical dartboard, and is used for testing the application logic.
 
   - A script in root dir called `sim_cli.py` can be used to simulate throwing darts in specified game. Game must be initialized, players added and game started.
 
@@ -44,7 +45,9 @@ THIS IS A WORK IN PROGRESS AND LOTS OF FEATURES ARE MISSING.
 ## Dartboard GPIO Connections 🔌
 
 ### Overview
-The dartboard connects to the GPIO pins of the SBC in a matrix configuration. Each dartboard segment (e.g., specific numbers, doubles, and triples) corresponds to a row and column connection. 
+The dartboard connects to the GPIO pins of the SBC in a matrix configuration. 
+
+Each dartboard segment (e.g., specific numbers, doubles, and triples) corresponds to a row and column connection. 
 
 ### INFO: Detailed schematic will be provided soon
 
@@ -127,7 +130,7 @@ Install the necessary dependencies:
 - A script in root dir called `sim_cli.py` can be used to simulate throwing darts in specified game. 
 - You can simulate throwing darts by entering `game ID` which is shown on the playfield
 - Darts are entered in format: [`M:S`] -> where `M` is multiplier and `S` is score
--- Examples: `D:8`, `T:10`, `S:25`, `D18`, `T17`, etc...
+* Examples: `D:8`, `T:10`, `S:25`, `D18`, `T17`, etc...
 - You can enter only one dart at a time (to simulate real darts game)
 
 ---
