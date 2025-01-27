@@ -1,20 +1,20 @@
 [![build](https://github.com/razorblade23/SmartDarts_v2_sbc/actions/workflows/python-app.yml/badge.svg?branch=master&event=push)](https://github.com/razorblade23/SmartDarts_v2_sbc/actions/workflows/python-app.yml)
 
 
-# SmartDarts
+# SmartDarts 🎯
 
 SmartDarts is a web-based application designed to bring smart functionality to electronic dartboards. It is built to run on single-board computers (SBCs) like Raspberry Pi and interfaces with the physical dartboard via GPIO pins to accurately register hits. The project aims to make local dart games more engaging and interactive.
 
 ---
 
-# WARNING
+# WARNING ⚠️
 THIS IS A WORK IN PROGRESS AND IS NOT RUNNABLE YET.
 
 ---
 
-## Features
+## Features ✨
 
-### Current Capabilities:
+### Current Capabilities: 🚀
 - **Dartboard Integration**:
   - Uses GPIO pins to connect and interact with physical electronic dartboards.
   - Configurable for various dartboard models via a guided initialization process. This allows you to map specific pins to numbers on the dartboard. (WORK IN PROGRESS)
@@ -31,7 +31,7 @@ THIS IS A WORK IN PROGRESS AND IS NOT RUNNABLE YET.
 - **Simulation Mode**:
   - Its possible to run the application in simulation mode. This DOES NOT require hardware components, wiring and physical dartboard, and is used for testing the application logic.
 
-### Work in Progress:
+### Work in Progress: 🛠️
 - Enhanced user interface.
 - Additional game modes and options.
 - Advanced analytics and scoring breakdowns.
@@ -39,7 +39,7 @@ THIS IS A WORK IN PROGRESS AND IS NOT RUNNABLE YET.
 
 ---
 
-## Dartboard GPIO Connections
+## Dartboard GPIO Connections 🔌
 
 ### Overview
 The dartboard connects to the GPIO pins of the SBC in a matrix configuration. Each dartboard segment (e.g., specific numbers, doubles, and triples) corresponds to a row and column connection. 
@@ -72,7 +72,7 @@ The dartboard connects to the GPIO pins of the SBC in a matrix configuration. Ea
 
 ---
 
-## Getting Started
+## Getting Started 🏁
 
 ### Prerequisites
 To use SmartDarts (as intended), you will need:
@@ -80,7 +80,10 @@ To use SmartDarts (as intended), you will need:
 - A compatible electronic dartboard.
 - Basic wiring to connect the dartboard's output pins to the SBC's GPIO pins.
 
-### Installation (Method: 1)
+
+
+
+### Installation (Method: 1) 💻
 1. Clone this repository to your SBC:
    ```bash
    git clone https://github.com/razorblade23/SmartDarts_v2_sbc
@@ -109,7 +112,7 @@ To use SmartDarts (as intended), you will need:
 
 
 
-### Installation (Method: 2)
+### Installation (Method: 2) 🖥️
 1. Clone this repository to your SBC:
    ```bash
    git clone https://github.com/razorblade23/SmartDarts_v2_sbc
@@ -132,18 +135,21 @@ To use SmartDarts (as intended), you will need:
 
 
 
----
 
-## Usage
 
-### Initial Setup
+## Usage 🕹️
+
+### Initial Setup 🔧
 1. Power up your SBC and connect it to the local network.
-2. Launch the application and follow the guided initialization process to map the dartboard pins to the respective numbers.
+2. Launch the application and configure your dartboard thrue guided proccess.
 3. Once configured, you can select a game mode and add players to begin playing.
 
+### Initial setup without SBC
+1. A script in root dir called `sim_cli.py` can be used to simulate throwing darts in specified game. Game must be initialized, players added and game started.
+
 ---
 
-## Contributing
+## Contributing 🤝
 Contributions are welcome! To contribute:
 1. Fork this repository.
 2. Create a branch for your feature or bug fix:
@@ -158,12 +164,12 @@ Contributions are welcome! To contribute:
 
 ---
 
-## License
+## License 📜
 This project is licensed under the [MIT License](LICENSE).
 
 ---
 
-## Acknowledgements
+## Acknowledgements 🙏
 - The Raspberry Pi community for GPIO libraries and support.
 - Dart enthusiasts worldwide for game inspiration.
 
