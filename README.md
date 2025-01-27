@@ -103,7 +103,7 @@ To use SmartDarts (as intended), you will need:
    ```bash
    python3 app.py
    ```
-4. Access the SmartDarts interface by navigating to `http://<your-sbc-ip>:8000` in your browser.
+4. Access the SmartDarts interface by navigating to `http://<your-sbc-ip>:5000` in your browser.
 
 
 
