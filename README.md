@@ -80,7 +80,7 @@ To use SmartDarts (as intended), you will need:
 - A compatible electronic dartboard.
 - Basic wiring to connect the dartboard's output pins to the SBC's GPIO pins.
 
-### Installation
+### Installation (Method: 1)
 1. Clone this repository to your SBC:
    ```bash
    git clone https://github.com/your-repo/smartdarts.git
@@ -99,6 +99,33 @@ To use SmartDarts (as intended), you will need:
    python3 app.py
    ```
 4. Access the SmartDarts interface by navigating to `http://<your-sbc-ip>:8000` in your browser.
+
+
+
+
+
+### Installation (Method: 2)
+1. Clone this repository to your SBC:
+   ```bash
+   git clone https://github.com/razorblade23/SmartDarts_v2_sbc
+   cd SmartDarts_v2_sbc
+   ```
+2. Install the necessary dependencies:
+
+   Check This [UV Official Docs](https://docs.astral.sh/uv/) For More Information on how to use UV
+   #### requires uv dependancy
+   ```bash
+   uv sync
+   ```
+3. Run the application:
+   ```bash
+   uv run python run.py
+   ```
+4. Access the SmartDarts interface by navigating to `http://<your-sbc-ip>:5000` in your browser.
+
+---
+
+
 
 ---
 
