@@ -8,7 +8,7 @@ SmartDarts is a web-based application designed to bring smart functionality to e
 ---
 
 # WARNING ⚠️
-THIS IS A WORK IN PROGRESS AND IS NOT RUNNABLE YET.
+THIS IS A WORK IN PROGRESS AND LOTS OF FEATURES ARE MISSING.
 
 ---
 
@@ -16,26 +16,28 @@ THIS IS A WORK IN PROGRESS AND IS NOT RUNNABLE YET.
 
 ### Current Capabilities: 🚀
 - **Dartboard Integration**:
-  - Uses GPIO pins to connect and interact with physical electronic dartboards.
-  - Configurable for various dartboard models via a guided initialization process. This allows you to map specific pins to numbers on the dartboard. (WORK IN PROGRESS)
+  - Uses GPIO pins to connect and interact with physical electronic dartboards. (currently only RPi supported, contributers welcome)
+  - Configurable for various dartboard models via a guided initialization process. This allows you to map specific pins to numbers on the dartboard. (not fully finished)
 
 - **Player Support**:
-  - Supports up to 8 players in a single game session. (WORK IN PROGRESS)
+  - Supports up to 8 players in a single game session. (X01 game (single out) only for now)
+  -- WARNING: Lacks proper boundaries and will go beyond zero
 
 - **Game Modes**:
   1. **X01**: 
-     - Popular game modes such as 301, 501, 701, and more. (WORK IN PROGRESS
-  2. **Cricket**:
-     - Full support for this strategic dart game. (WORK IN PROGRESS)
+     - Popular game modes such as 301, 501, 701, and more. (only "Single Out" mode for now implemented)
 
 - **Simulation Mode**:
-  - Its possible to run the application in simulation mode. This DOES NOT require hardware components, wiring and physical dartboard, and is used for testing the application logic.
+  - Its possible to run the application in simulation mode. ** This DOES NOT require hardware components, wiring and physical dartboard, and is used for testing the application logic.
+
+  - A script in root dir called `sim_cli.py` can be used to simulate throwing darts in specified game. Game must be initialized, players added and game started.
 
 ### Work in Progress: 🛠️
 - Enhanced user interface.
 - Additional game modes and options.
 - Advanced analytics and scoring breakdowns.
 - Remote game hosting and multiplayer support.
+- Better README with more information on the topic
 
 ---
 
@@ -43,6 +45,8 @@ THIS IS A WORK IN PROGRESS AND IS NOT RUNNABLE YET.
 
 ### Overview
 The dartboard connects to the GPIO pins of the SBC in a matrix configuration. Each dartboard segment (e.g., specific numbers, doubles, and triples) corresponds to a row and column connection. 
+
+### INFO: Detailed schematic will be provided soon
 
 ### Wiring Explanation
 1. **Matrix Layout**:
@@ -52,50 +56,35 @@ The dartboard connects to the GPIO pins of the SBC in a matrix configuration. Ea
 2. **Resistors**:
    - Each column is connected via pull-down resistors to prevent floating signals and ensure stable readings.
 
-3. **Pin Mapping**:
-   Below is a mapping of the dartboard's segments to the GPIO pins:
-
-   | Dartboard Column | GPIO Pin |
-   |-------------------|----------|
-   | Column 1          | GPIO 6   |
-   | Column 2          | GPIO 27  |
-   | Column 3          | GPIO 5   |
-   | Column 4          | GPIO 17  |
-   | Column 5          | GPIO 10  |
-   | Column 6          | GPIO 22  |
-   | Column 7          | GPIO 26  |
-
-   The rows are connected similarly, with each dartboard number linked to specific pins for segment detection.
-
-4. **Status LED**:
-   - An optional status LED can be connected to GPIO pins to show system activity.
-
 ---
 
 ## Getting Started 🏁
 
 ### Prerequisites
 To use SmartDarts (as intended), you will need:
-- A single-board computer (e.g., Raspberry Pi) with GPIO support.
-- A compatible electronic dartboard.
-- Basic wiring to connect the dartboard's output pins to the SBC's GPIO pins.
+- A single-board computer (e.g., Raspberry Pi) with GPIO support
+- A compatible electronic dartboard. (nearly any can be used)
+- Basic understanding of electronics
+- Some thin wire (0.50 - 0.75mm)
+- Some resistors
+- Small solderboard (or breadboard for prototyping)
+- Basic soldering skills (if using solderboard)
+
+### Installation
+Installation has 2 methods, using standard pip or using uv (https://docs.astral.sh/uv/)
+Both methods are fine
 
 
-
-
-### Installation (Method: 1) 💻
 1. Clone this repository to your SBC:
    ```bash
+
    git clone https://github.com/razorblade23/SmartDarts_v2_sbc
-
-   
    cd SmartDarts_v2_sbc
-
-
-
+   
    ```
-2. Install the necessary dependencies:
-   #### requires uv dependancy
+
+### Installation -> Method: 1 💻
+Install the necessary dependencies:
    ```bash
 
    sudo apt-get update
@@ -106,57 +95,40 @@ To use SmartDarts (as intended), you will need:
    pip-compile pyproject.toml
    pip install -r requirements.txt
 
+   ```
+### Installation -> Method: 2 🖥️
+#### Requires `uv` to be installed
+Install the necessary dependencies:
+   ```bash
 
    uv sync
-
+   
    ```
+
 3. Run the application:
    ```bash
-   uv run python run.py
+
+   uv run run.py
+
    ```
+
 4. Access the SmartDarts interface by navigating to `http://<your-sbc-ip>:5000` in your browser.
-
-
-
-
-
-
-### Installation (Method: 2) 🖥️
-1. Clone this repository to your SBC:
-   ```bash
-   git clone https://github.com/razorblade23/SmartDarts_v2_sbc
-   cd SmartDarts_v2_sbc
-   ```
-2. Install the necessary dependencies:
-
-   Check This [UV Official Docs](https://docs.astral.sh/uv/) For More Information on how to use UV
-   #### requires uv dependancy
-   ```bash
-   uv sync
-   ```
-3. Run the application:
-   ```bash
-   uv run python run.py
-   ```
-4. Access the SmartDarts interface by navigating to `http://<your-sbc-ip>:5000` in your browser.
-
-
 
 ---
-
-
-
-
 
 ## Usage 🕹️
 
 ### Initial Setup 🔧
 1. Power up your SBC and connect it to the local network.
-2. Launch the application and configure your dartboard thrue guided proccess.
+2. Launch the application and configure your dartboard with guided proccess.
 3. Once configured, you can select a game mode and add players to begin playing.
 
-### Initial setup without SBC
-1. A script in root dir called `sim_cli.py` can be used to simulate throwing darts in specified game. Game must be initialized, players added and game started.
+### Initial setup without SBC (Simulation mode)
+- A script in root dir called `sim_cli.py` can be used to simulate throwing darts in specified game. 
+- You can simulate throwing darts by entering `game ID` which is shown on the playfield
+- Darts are entered in format: [`M:S`] -> where `M` is multiplier and `S` is score
+-- Examples: `D:8`, `T:10`, `S:25`, `D18`, `T17`, etc...
+- You can enter only one dart at a time (to simulate real darts game)
 
 ---
 
@@ -164,13 +136,7 @@ To use SmartDarts (as intended), you will need:
 Contributions are welcome! To contribute:
 1. Fork this repository.
 2. Create a branch for your feature or bug fix:
-   ```bash
-   git checkout -b feature/my-feature
-   ```
 3. Commit your changes:
-   ```bash
-   git commit -m "Add my feature"
-   ```
 4. Push to your branch and submit a pull request.
 
 ---
