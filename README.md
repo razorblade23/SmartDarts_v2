@@ -87,7 +87,7 @@ To use SmartDarts (as intended), you will need:
    cd SmartDarts_v2_sbc
    ```
 2. Install the necessary dependencies:
-   ## requires uv dependancy
+   #### requires uv dependancy
    ```bash
    uv sync
    ```
@@ -103,8 +103,11 @@ To use SmartDarts (as intended), you will need:
 
 ### Initial Setup
 1. Power up your SBC and connect it to the local network.
-2. Launch the application and follow the guided initialization process to map the dartboard pins to the respective numbers.
+2. Launch the application and configure your dartboard thrue guided proccess.
 3. Once configured, you can select a game mode and add players to begin playing.
+
+### Initial setup without SBC
+1. A script in root dir called `sim_cli.py` can be used to simulate throwing darts in specified game. Game must be initialized, players added and game started.
 
 ---
 
