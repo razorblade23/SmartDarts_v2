@@ -1,5 +1,15 @@
 from enum import Enum
 
+from pydantic import BaseModel
+
+
+class ThrowDartEvent(BaseModel):
+    position: int
+    name: str
+    score: int
+    darts: list
+    status: str
+
 
 class GameType(Enum):
     """Enum for different game types."""

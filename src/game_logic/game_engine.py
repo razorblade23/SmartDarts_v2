@@ -1,4 +1,6 @@
+from queue import Queue
 from typing import Any
+from uuid import uuid4
 
 from .enums import GameType, OutRule
 from .game_modes import CricketGame, Dart, X01Game
@@ -9,8 +11,10 @@ class DartGameEngine:
 
     def __init__(self, game_type: GameType, **kwargs):
         self.game_type = game_type
+        self.events = Queue()
         self.game_started = False
 
+        print(f"{self.game_type=}")
         match self.game_type:
             case GameType.X01:
                 self.game = X01Game(
@@ -19,8 +23,9 @@ class DartGameEngine:
                 )
             case GameType.CRICKET:
                 self.game = CricketGame()
+        print(f"Created {self.game=}")
 
-            # Future games can be added easily here
+        # Future games can be added easily here
 
     def start_game(self):
         self.game_started = True
@@ -30,7 +35,8 @@ class DartGameEngine:
 
     def throw_dart(self, dart: dict[str, int]):
         """Handles a turn by passing responsibility to the game mode."""
-        self.game.throw_dart(Dart(**dart))
+        event = self.game.throw_dart(Dart(**dart))
+        self.events.put(event)
 
     def get_player_score(self, player_name: str) -> int:
         for player in self.game.players:
@@ -83,3 +89,22 @@ class DartGameEngine:
     #             db_session.add(turn_entry)
 
     #     db_session.commit()
+
+
+class DartgameManager:
+    _instance = None
+    games: dict = {}
+
+    def __new__(cls):
+        if cls._instance is None:
+            cls._instance = super(DartgameManager, cls).__new__(cls)
+            cls._instance.games = {}
+        return cls._instance
+
+    def create_game(self, gametype: GameType, **kwargs) -> str:
+        game_id = str(uuid4())
+        self.games[game_id] = DartGameEngine(game_type=gametype, **kwargs)
+        return game_id
+
+    def get_game(self, game_id: str) -> DartGameEngine | None:
+        return self.games.get(game_id)

@@ -14,7 +14,8 @@ class Player(Protocol):
 class X01Player:
     """Represents a player in the game with score tracking."""
 
-    def __init__(self, name: str, starting_score: int):
+    def __init__(self, position: int, name: str, starting_score: int):
+        self.position = position
         self.name = name
         self.starting_score = starting_score
         self.score = starting_score

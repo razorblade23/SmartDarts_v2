@@ -6,7 +6,7 @@ from enum import Enum
 
 import requests
 
-BASE_URL = "http://localhost:5000"
+BASE_URL = "http://localhost:5000/api"
 
 players = []
 

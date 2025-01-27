@@ -3,6 +3,7 @@ from pathlib import Path
 
 import markdown
 from flask import Flask, render_template
+from flask_socketio import SocketIO
 
 from src.routes.api import api_router
 from src.routes.views import views_router
@@ -17,6 +18,7 @@ LOG = logging.getLogger(__name__)
 
 app = Flask(__name__)
 app.secret_key = "your_secret_key"
+socketio = SocketIO(app)
 
 
 app.register_blueprint(views_router)

@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 
 from pydantic import BaseModel
 
-from .enums import OutRule
+from .enums import OutRule, ThrowDartEvent
 from .players import CricketPlayer, Player, X01Player
 
 
@@ -47,7 +47,13 @@ class X01Game(GameMode):
 
     def add_player(self, player_name: str):
         """Adds a player to the game."""
-        self.players.append(X01Player(player_name, self.starting_score))
+        self.players.append(
+            X01Player(
+                position=len(self.players) + 1,
+                name=player_name,
+                starting_score=self.starting_score,
+            )
+        )
 
     def get_stats(self):
         stats = []
@@ -67,6 +73,15 @@ class X01Game(GameMode):
         self.winner = player.name
         ## TODO Implement rules based winner declaration (Double out, Master out, etc...)
 
+    def return_event(self, status) -> ThrowDartEvent:
+        return ThrowDartEvent(
+            position=self.current_player.position,
+            name=self.current_player.name,
+            score=self.current_player.score,
+            darts=self.current_player.turn,
+            status=status,
+        )
+
     def throw_dart(self, dart: Dart):
         self.current_player = self.players[self.current_player_index]
 
@@ -84,11 +99,12 @@ class X01Game(GameMode):
         # BUST LOGIC: If the score goes below 0, reset it to the initial score
         if self.current_player.score < 0:
             self.current_player.score = initial_score  # Reset due to bust
-            return  # Bust, so turn ends immediately
+            return self.return_event(status="bust")
 
         # WIN CONDITION: Player must reach exactly 0
         if self.current_player.score == 0:
             self.check_winner(self.current_player)
+            return self.return_event(status="win")
 
         # END TURN: Player must throw all darts then its next players turn
         if len(self.current_player.turn) == self.darts_per_player:
@@ -96,6 +112,8 @@ class X01Game(GameMode):
             self.current_player_index += 1
             if self.current_player_index == len(self.players):
                 self.current_player_index = 0
+
+        return self.return_event(status="ok")
 
 
 class CricketGame(GameMode):

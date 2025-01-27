@@ -1,0 +1,50 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<br>
+<div class="container">
+    <div class="row">
+        <div class="col-12 text-center">
+            <h6>Game ID:</h6>
+            <h5>{{ game_id }}</h5>
+        </div>
+    </div>
+    <hr>
+    <br>
+    <div class="row">
+        {% for player in players %}
+        <div class="col-4 text-center border border-secondary pt-2 m-1">
+            <div class="row">
+                <div class="col-12 border-end border-secondary">
+                    <h6>{{ player.position }}</h6>
+                    <h6>{{ player.name }}</h6>
+                </div>
+                <div class="col-12">
+                    <h1>{{ player.score }}</h1>
+                </div>
+            </div>
+        </div>
+
+        {% endfor %}
+    </div>
+</div>
+
+
+<!-- <script>
+    const eventSource = new EventSource("/sse_connect");
+
+    eventSource.onmessage = function (event) {
+        const data = JSON.parse(event.data);
+        console.log("Received event:", data);
+
+        // Example: Update UI
+        // document.getElementById("playerName").textContent = data.name;
+        // document.getElementById("playerScore").textContent = data.score;
+    };
+
+    eventSource.onerror = function (err) {
+        console.error("SSE error:", err);
+    };
+</script> -->
+
+{% endblock %}

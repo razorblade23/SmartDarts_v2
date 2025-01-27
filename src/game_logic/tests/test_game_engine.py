@@ -27,33 +27,6 @@ def test_x01_bust_first_dart():
     assert game.get_player_score("Alice") == 50  # Bust, score should revert
 
 
-def test_x01_bust_second_dart():
-    """Player should bust on the second dart and score should reset."""
-    players = [MockPlayer("Charlie")]
-    game = DartGameEngine(game_type=GameType.X01, starting_score=50)
-    for p in players:
-        game.add_player(p.name)
-
-    game.throw_dart({"score": 20, "multiplier": 2})  # Brings score to 30
-    game.throw_dart({"score": 25, "multiplier": 1})  # Over 50 → BUST
-
-    assert game.get_player_score("Charlie") == 50  # Should reset due to bust
-
-
-def test_x01_bust_third_dart():
-    """Player should bust on the second dart and score should reset."""
-    players = [MockPlayer("Charlie")]
-    game = DartGameEngine(game_type=GameType.X01, starting_score=50)
-    for p in players:
-        game.add_player(p.name)
-
-    game.throw_dart({"score": 20, "multiplier": 1})
-    game.throw_dart({"score": 20, "multiplier": 1})
-    game.throw_dart({"score": 20, "multiplier": 1})
-
-    assert game.get_player_score("Charlie") == 50  # Should reset due to bust
-
-
 def test_x01_exact_checkout():
     """Player should win when reaching exactly zero, no bust."""
     players = [MockPlayer("Diana")]

@@ -63,14 +63,13 @@ def test_throw_darts(client):
     client.get(f"/api/game/{game_id}/add_player", json={"player_name": "Alice"})
 
     response = client.post(
-        f"/game/{game_id}/throw",
-        json={"player_name": "Alice", "darts": [{"score": 20, "multiplier": 2}]},
+        f"/api/game/{game_id}/throw",
+        json={"dart": {"score": 20, "multiplier": 2}},
     )
     data = response.get_json()
 
     assert response.status_code == 200
-    assert data["message"] == "Player Alice threw darts."
-    assert "states" in data
+    assert "status" in data
 
 
 def test_get_game_state(client):
