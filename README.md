@@ -83,7 +83,8 @@ To use SmartDarts (as intended), you will need:
 ### Installation (Method: 1)
 1. Clone this repository to your SBC:
    ```bash
-   git clone https://github.com/your-repo/smartdarts.git
+   git clone https://github.com/razorblade23/SmartDarts_v2_sbc
+   
    cd smartdarts
    ```
 2. Install the necessary dependencies:
@@ -92,7 +93,10 @@ To use SmartDarts (as intended), you will need:
    sudo apt-get install -y python3 python3-pip
    python3 -m venv .venv
    source .venv/bin/activate
-   pip3 install -r requirements.txt
+   pip install pip-tools
+   pip-compile pyproject.toml
+   pip install -r requirements.txt
+
    ```
 3. Run the application:
    ```bash
