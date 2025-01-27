@@ -83,22 +83,19 @@ To use SmartDarts (as intended), you will need:
 ### Installation
 1. Clone this repository to your SBC:
    ```bash
-   git clone https://github.com/your-repo/smartdarts.git
-   cd smartdarts
+   git clone https://github.com/razorblade23/SmartDarts_v2_sbc
+   cd SmartDarts_v2_sbc
    ```
 2. Install the necessary dependencies:
+   ## requires uv dependancy
    ```bash
-   sudo apt-get update
-   sudo apt-get install -y python3 python3-pip
-   python3 -m venv .venv
-   source .venv/bin/activate
-   pip3 install -r requirements.txt
+   uv sync
    ```
 3. Run the application:
    ```bash
-   python3 app.py
+   uv run python run.py
    ```
-4. Access the SmartDarts interface by navigating to `http://<your-sbc-ip>:8000` in your browser.
+4. Access the SmartDarts interface by navigating to `http://<your-sbc-ip>:5000` in your browser.
 
 ---
 
