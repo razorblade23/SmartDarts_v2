@@ -135,6 +135,9 @@ Install the necessary dependencies:
 * Examples: `D:8`, `T:10`, `S:25`, `D18`, `T17`, etc...
 - You can enter only one dart at a time (to simulate real darts game)
 
+### Simulation mode video example
+
+[Watch the video](https://drive.google.com/file/d/1RKydZ4Jgd9roUBoIV6txFK-O_1VpIAq-/view?usp=drivesdk)
 ---
 
 ## Contributing 🤝
