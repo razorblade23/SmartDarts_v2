@@ -8,7 +8,7 @@ class Player(Protocol):
         self.score = starting_score
         self.turns = []
 
-    def record_turn(self, darts: list[dict[str, int]]): ...
+    def record_turn(self, score: int, score_multiplier: int): ...
 
 
 class X01Player:

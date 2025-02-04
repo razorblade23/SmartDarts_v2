@@ -10,20 +10,20 @@ class DartGameEngine:
     """Manages dart game sessions."""
 
     def __init__(self, game_type: GameType, **kwargs):
-        self.game_type = game_type
         self.events = Queue()
         self.game_started = False
 
-        print(f"{self.game_type=}")
-        match self.game_type:
+        match game_type:
             case GameType.X01:
+                starting_score = kwargs.get("starting_score", 501)
+                out_rule = kwargs.get("out_rule", OutRule.SINGLE_OUT)
+
                 self.game = X01Game(
-                    starting_score=kwargs.get("starting_score", 501),
-                    out_rule=kwargs.get("out_rule", OutRule.SINGLE_OUT),
+                    starting_score=starting_score,
+                    out_rule=OutRule(out_rule),
                 )
             case GameType.CRICKET:
                 self.game = CricketGame()
-        print(f"Created {self.game=}")
 
         # Future games can be added easily here
 
@@ -36,6 +36,7 @@ class DartGameEngine:
     def throw_dart(self, dart: dict[str, int]):
         """Handles a turn by passing responsibility to the game mode."""
         event = self.game.throw_dart(Dart(**dart))
+        print(f"Put in events: {event=}")
         self.events.put(event)
 
     def get_player_score(self, player_name: str) -> int:
@@ -56,44 +57,10 @@ class DartGameEngine:
         """Returns the winner's name."""
         return self.game.winner
 
-    ## TODO We will deal with databases later
-    # def save_to_database(self, db_session):
-    #     """Saves game results to the database once the game ends."""
-    #     if not self.is_game_over():
-    #         return
-
-    #     from models import GameSession, Player, Turn  # Import models dynamically
-
-    #     game_session = GameSession(
-    #         game_mode_id=1,  # Placeholder, should be dynamic
-    #         status="completed",
-    #     )
-    #     db_session.add(game_session)
-    #     db_session.commit()
-
-    #     for player in self.game.players:
-    #         db_player = db_session.query(Player).filter_by(name=player.name).first()
-    #         if not db_player:
-    #             db_player = Player(name=player.name)
-    #             db_session.add(db_player)
-    #             db_session.commit()
-
-    #         for turn in player.turns:
-    #             turn_entry = Turn(
-    #                 session_id=game_session.id,
-    #                 player_id=db_player.id,
-    #                 score_before=turn["score_before"],
-    #                 score_after=turn["score_after"],
-    #                 darts_hit=turn["darts"],
-    #             )
-    #             db_session.add(turn_entry)
-
-    #     db_session.commit()
-
 
 class DartgameManager:
     _instance = None
-    games: dict = {}
+    games: dict[str, DartGameEngine] = {}
 
     def __new__(cls):
         if cls._instance is None:

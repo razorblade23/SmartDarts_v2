@@ -69,7 +69,7 @@ class X01Game(GameMode):
         return stats
 
     def check_winner(self, player: X01Player):
-        """Checks if someone has closed all numbers."""
+        """Checks if player has followed the OUT rules"""
         self.winner = player.name
         ## TODO Implement rules based winner declaration (Double out, Master out, etc...)
 
@@ -82,8 +82,49 @@ class X01Game(GameMode):
             status=status,
         )
 
+    def _player_busted(self, initial_score: int) -> bool:
+        """
+        BUST LOGIC
+        If the score goes below 0, reset it to the initial score
+        """
+        if self.current_player.score < 0:
+            self.current_player.score = initial_score  # Reset due to bust
+            return True
+        return False
+
+    def _player_win(self) -> bool:
+        """
+        WIN LOGIC
+        If the score is 0 check if the player has won the game
+        """
+        if self.current_player.score == 0:
+            match self.out_rule:
+                case OutRule.SINGLE_OUT:
+                    return True
+                case OutRule.DOUBLE_OUT:
+                    last_dart = self.current_player.turn[-1]
+                    last_dart_multiplier = last_dart.get("score_multiplier")
+                    if last_dart_multiplier == 2:
+                        return True
+                case OutRule.MASTER_OUT:
+                    last_dart = self.current_player.turn[-1]
+                    last_dart_multiplier = last_dart.get("score_multiplier")
+                    if any([last_dart_multiplier == 2, last_dart_multiplier == 3]):
+                        return True
+        return False
+
     def throw_dart(self, dart: Dart):
         self.current_player = self.players[self.current_player_index]
+
+        if self.current_player.score == self.starting_score:  # Just started playing
+            if self.out_rule == OutRule.DOUBLE_IN:
+                if not dart.multiplier == 2:
+                    self.current_player.record_turn(
+                        score_before=self.current_player.score,
+                        score=0,
+                        score_multiplier=dart.multiplier,
+                    )
+                    return self.return_event(status="bust")
 
         self.current_player.record_turn(
             score_before=self.current_player.score,
@@ -96,14 +137,10 @@ class X01Game(GameMode):
         points = dart.score * dart.multiplier
         self.current_player.score -= points
 
-        # BUST LOGIC: If the score goes below 0, reset it to the initial score
-        if self.current_player.score < 0:
-            self.current_player.score = initial_score  # Reset due to bust
+        if self._player_busted(initial_score):
             return self.return_event(status="bust")
 
-        # WIN CONDITION: Player must reach exactly 0
-        if self.current_player.score == 0:
-            self.check_winner(self.current_player)
+        if self._player_win():
             return self.return_event(status="win")
 
         # END TURN: Player must throw all darts then its next players turn
