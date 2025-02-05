@@ -22,7 +22,25 @@
 </div>
 
 
+<script src="{{ url_for('static', filename='socketio.min.js') }}"></script>
 <script>
+    // Connect to Flask-SocketIO server
+    var socket = io.connect("http://localhost:5000"); // Change URL if needed
+
+    socket.on("connect", function () {
+        console.log("✅ Connected to server!");
+    });
+
+    socket.on("update_tile", function (data) {
+        console.log("🔄 Updating player tile:", data);
+
+        // Find the player's tile and update it
+        let playerTile = document.querySelector(`#player-${data.player_id}`);
+        if (playerTile) {
+            playerTile.innerHTML = data.html;
+        }
+    });
+
     function startGameMonitoring(game_id) {
         let url = `/utils/start_game_listener?game_id=${game_id}`
         fetch(url, {
@@ -30,24 +48,7 @@
         }).catch(error => console.error("Error:", error));
     }
 
-    function connectWebSocket() {
-        let socket = new WebSocket("ws://localhost:5000/socket.io/update_tile?EIO=4&transport=websocket",);
-
-        socket.onopen = () => console.log("Connected to WebSocket");
-
-        socket.onmessage = (event) => {
-            console.log(event.data);
-        }
-
-        socket.onclose = (e) => {
-            console.warn(`WebSocket closed: ${e.reason}. Reconnecting in 3 seconds...`);
-            setTimeout(connectWebSocket, 3000);
-        };
-        socket.onerror = (e) => console.error(`WebSocket error: ${e.message}`);
-    }
-
     startGameMonitoring("{{ game_id }}");
-    connectWebSocket();
 
 </script>
 

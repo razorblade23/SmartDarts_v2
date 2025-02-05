@@ -1,18 +1,17 @@
-from gevent.monkey import patch_all
+from eventlet import monkey_patch
 
-patch_all()
+monkey_patch()
 
 
 # Turning off typechecking as it gives warning because of monkey_patch() running first
-import json  # noqa: E402
 import logging  # noqa: E402
 from pathlib import Path  # noqa: E402
 from queue import Empty  # noqa: E402
 
 import markdown  # noqa: E402
+from eventlet import sleep, spawn  # noqa: E402
 from flask import Flask, render_template, request  # noqa: E402
-from flask_sockets import Sockets  # noqa: E402
-from gevent import sleep, spawn  # noqa: E402
+from flask_socketio import SocketIO  # noqa: E402
 
 from src.game_logic.game_engine import DartgameManager  # noqa: E402
 from src.routes.api import api_router  # noqa: E402
@@ -31,7 +30,7 @@ LOG = logging.getLogger(__name__)
 
 app = Flask(__name__)
 app.secret_key = "your_secret_key"
-socket = Sockets(app)
+socketio = SocketIO(app, cors_allowed_origins="*")
 
 
 app.register_blueprint(views_router)
@@ -60,7 +59,9 @@ def game_event_listener(game_id: str):
             )
             print(f"Sending player HTML to frontend: [{player_html=}]")
             # Emit only the updated player's tile to HTMX
-            socket.send(json.dumps({"player_id": event.position, "html": player_html}))
+            socketio.emit(
+                "update_tile", {"player_id": event.position, "html": player_html}
+            )
         sleep(2)
 
 

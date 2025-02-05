@@ -36,7 +36,6 @@ class DartGameEngine:
     def throw_dart(self, dart: dict[str, int]):
         """Handles a turn by passing responsibility to the game mode."""
         event = self.game.throw_dart(Dart(**dart))
-        print(f"Put in events: {event=}")
         self.events.put(event)
 
     def get_player_score(self, player_name: str) -> int:

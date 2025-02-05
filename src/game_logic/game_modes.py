@@ -92,7 +92,7 @@ class X01Game(GameMode):
             return True
         return False
 
-    def _player_win(self) -> bool:
+    def _player_win(self, initial_score: int) -> bool:
         """
         WIN LOGIC
         If the score is 0 check if the player has won the game
@@ -106,11 +106,19 @@ class X01Game(GameMode):
                     last_dart_multiplier = last_dart.get("score_multiplier")
                     if last_dart_multiplier == 2:
                         return True
+
+                    # If the last dart multiplier is not 2, bust
+                    self.current_player.score = initial_score
+                    return False
+
                 case OutRule.MASTER_OUT:
                     last_dart = self.current_player.turn[-1]
                     last_dart_multiplier = last_dart.get("score_multiplier")
                     if any([last_dart_multiplier == 2, last_dart_multiplier == 3]):
                         return True
+                    # If the last dart multiplier is not 2 or 3, bust
+                    self.current_player.score = initial_score
+                    return False
         return False
 
     def throw_dart(self, dart: Dart):
@@ -140,7 +148,7 @@ class X01Game(GameMode):
         if self._player_busted(initial_score):
             return self.return_event(status="bust")
 
-        if self._player_win():
+        if self._player_win(initial_score):
             return self.return_event(status="win")
 
         # END TURN: Player must throw all darts then its next players turn

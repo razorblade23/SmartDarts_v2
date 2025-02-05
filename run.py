@@ -1,8 +1,4 @@
-from src.app import app
+from src.app import app, socketio
 
 if __name__ == "__main__":
-    from gevent import pywsgi
-    from geventwebsocket.handler import WebSocketHandler
-
-    server = pywsgi.WSGIServer(("", 5000), app, handler_class=WebSocketHandler)
-    server.serve_forever()
+    socketio.run(app, host="0.0.0.0", port=5000, debug=True)

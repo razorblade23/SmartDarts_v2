@@ -3,8 +3,11 @@ from logging import getLogger
 
 from flask import Blueprint, render_template, request, session
 
-from ....dartboard.config import DartboardConfig, DartboardConfigurator
-from ....SBC.gpio_handlers.mock_handler import MockGPIOHandler
+from ....hardware_components.dartboard.config import (
+    DartboardConfig,
+    DartboardConfigurator,
+)
+from ....hardware_components.SBC.gpio_handlers.mock_handler import MockGPIOHandler
 
 configurator_router = Blueprint("configurator", __name__)
 
