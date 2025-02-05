@@ -23,11 +23,6 @@ class GameMode(ABC):
         """Handles dart throws, must be implemented by each game type."""
         pass
 
-    @abstractmethod
-    def check_winner(self):
-        """Checks if the game is over."""
-        pass
-
 
 class X01Game(GameMode):
     """Handles X01 dart game logic (301, 501, etc.)."""
@@ -44,6 +39,7 @@ class X01Game(GameMode):
         self.players: list[X01Player] = []
         self.current_player: X01Player | None = None
         self.current_player_index = 0
+        self.winner = None
 
     def add_player(self, player_name: str):
         """Adds a player to the game."""
@@ -67,11 +63,6 @@ class X01Game(GameMode):
             }
             stats.append(p_stats)
         return stats
-
-    def check_winner(self, player: X01Player):
-        """Checks if player has followed the OUT rules"""
-        self.winner = player.name
-        ## TODO Implement rules based winner declaration (Double out, Master out, etc...)
 
     def return_event(self, status) -> ThrowDartEvent:
         return ThrowDartEvent(
@@ -149,6 +140,7 @@ class X01Game(GameMode):
             return self.return_event(status="bust")
 
         if self._player_win(initial_score):
+            self.winner = self.current_player
             return self.return_event(status="win")
 
         # END TURN: Player must throw all darts then its next players turn

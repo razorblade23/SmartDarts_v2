@@ -38,7 +38,7 @@ def test_x01_exact_checkout():
     game.throw_dart({"score": 30, "multiplier": 1})
 
     assert game.get_player_score("Diana") == 0  # Should win
-    assert game.winner == "Diana"  # Game should declare Diana as the winner
+    assert game.winner.name == "Diana"  # Game should declare Diana as the winner
 
 
 ## TODO When cricket is finished, enable these tests
