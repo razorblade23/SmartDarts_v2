@@ -49,7 +49,7 @@ The dartboard connects to the GPIO pins of the SBC in a matrix configuration.
 
 Each dartboard segment (e.g., specific numbers, doubles, and triples) corresponds to a row and column connection. 
 
-### INFO: Detailed schematic will be provided soon
+### INFO: Basic connection schema provided
 
 ### Wiring Explanation
 1. **Matrix Layout**:
